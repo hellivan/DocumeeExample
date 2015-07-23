@@ -229,13 +229,13 @@ appControllers.controller("apitest.BaseController", function ($log, $http, $scop
                         $log.debug(data);
                         $scope.data_twitter = data;
                         $scope.twitterstate.current = state.name;
-                        setKeyError();
+                        $apiKey.setError();
                     }).
                     error(function(data, status, headers, config) {
                         $log.debug("Error: " + data);
                         if(status === 401){
                             if(data.type === "KEY"){
-                                setKeyError(data.message);
+                                $apiKey.setError(data.message);
                             }
                         }
                     });

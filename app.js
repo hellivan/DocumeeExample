@@ -33,7 +33,7 @@ app.config(['cfpLoadingBarProvider', '$httpProvider', '$routeProvider', 'localSt
 
         localStorageServiceProvider.setPrefix('ls');
 
-        $documeeApiProvider.setHostAddress("http://localhost:8000/");
+        $documeeApiProvider.setHostAddress("http://documee-protoype.herokuapp.com/");
         $documeeApiProvider.setApiPath("api/v0/");
     }]);
 
