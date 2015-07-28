@@ -75,7 +75,7 @@ appServices.factory('$authentication',
     });
 
 appServices.factory('$apiKey',
-    function($log, $rootScope){
+    function($log, $rootScope, $http){
         var service = {};
 
         service.setError = function(message){
@@ -87,6 +87,10 @@ appServices.factory('$apiKey',
             }
         };
 
+        service.updateApiKey = function (api_key){
+            $rootScope.api_key = api_key;
+            $http.defaults.headers.common.api_key = api_key;
+        };
 
         return service;
     });

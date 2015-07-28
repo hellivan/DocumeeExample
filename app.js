@@ -27,8 +27,9 @@ app.config(['cfpLoadingBarProvider', '$httpProvider', '$routeProvider', 'localSt
 
 
 app.run(
-    function ($log, $rootScope, $location, $cookies, $authentication) {
+    function ($log, $rootScope, $location, $cookies, $authentication, $apiKey) {
         $authentication.restoreCredentials();
+        $apiKey.updateApiKey("a43d4cda-fecf-44e6-b351-71f6ffc1f7f7");
     });
 
 

@@ -288,7 +288,7 @@ appControllers.controller("example.FacebookController", function ($log, $http, $
 });
 
 
-appControllers.controller('example.NavbarController', function($scope, $http, $rootScope, $modal){
+appControllers.controller('example.NavbarController', function($scope, $http, $rootScope, $modal, $apiKey){
     $scope.showKeyDialog = function(size){
         var modalInstance = $modal.open({
             animation: true,
@@ -303,19 +303,14 @@ appControllers.controller('example.NavbarController', function($scope, $http, $r
         });
 
         modalInstance.result.then(function (api_key) {
-            updateApiKey(api_key);
+            $apiKey.updateApiKey(api_key);
         }, function (param) {
             console.log('Modal dismissed at: ' + new Date() +" - " +param);
         });
 
     };
 
-    function updateApiKey (api_key){
-        $rootScope.api_key = api_key;
-        $http.defaults.headers.common.api_key = api_key;
-    };
 
-    updateApiKey("a43d4cda-fecf-44e6-b351-71f6ffc1f7f7");
 });
 
 
