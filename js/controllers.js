@@ -1,7 +1,7 @@
-var appControllers = angular.module('apitest.controllers', ['apitest.services', 'ui.bootstrap', 'DocumeeServices']);
+var appControllers = angular.module('example.controllers', ['example.services', 'ui.bootstrap']);
 
 
-appControllers.controller("apitest.MixController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
+appControllers.controller("example.MixController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
 
     $scope.providers = ['facebook', 'twitter'];
     $scope.useProvider = {};
@@ -50,6 +50,12 @@ appControllers.controller("apitest.MixController", function ($log, $http, $scope
                 });
                 $log.debug(queryProviders);
 
+                var params = "";
+                if(queryProviders.length>0){
+                    params = "?"
+                }
+
+                $scope.query = newState.api.method.toUpperCase() + " - " + newState.api.call + params;
                 $http[newState.api.method](newState.api.call, {params: {providers:queryProviders}}).
                     success(function(data, status, headers, config) {
                         $log.debug("Success: " + JSON.stringify(data));
@@ -72,11 +78,114 @@ appControllers.controller("apitest.MixController", function ($log, $http, $scope
     };
 
 
-    $log.debug("Loaded apitest.MixController");
+    $log.debug("Loaded MixController");
 });
 
 
-appControllers.controller("apitest.BaseController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
+appControllers.controller("example.TwitterController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
+    OAuth.initialize("U7oog1cN5o_ZsjeoQ_rPOxbFaKA");
+
+    $scope.twitterstate = {
+        states : [
+            {
+                name: 'get_friends',
+                description: 'Fetch friends on twitter',
+                api : {
+                    method : 'get',
+                    call : $documeeApi.baseAddress + 'twitter/friends'
+                },
+                template : 'partials/twitter/friends-list.html'
+            },
+            {
+                name: 'delete_following',
+                description: 'Fetch people following on twitter',
+                api : {
+                    method : 'get',
+                    call : $documeeApi.baseAddress + 'twitter/following'
+                },
+                template : 'partials/twitter/friends-list.html'
+            },
+            {
+                name: 'get_followers',
+                description: 'Fetch followers on twitter',
+                api : {
+                    method : 'get',
+                    call : $documeeApi.baseAddress + 'twitter/followers'
+                },
+                template : 'partials/twitter/friends-list.html'
+            },
+            {
+                name: 'get_trends',
+                description: 'Fetch top 10 trends on twitter',
+                api : {
+                    method : 'get',
+                    call : $documeeApi.baseAddress + 'twitter/trends'
+                },
+                template : 'partials/twitter/trends-list.html'
+            },
+            {
+                name : 'get_user',
+                description : 'Fetch user information on twitter',
+                api : {
+                    method : 'get',
+                    call : $documeeApi.baseAddress + 'twitter/me'
+                },
+                template : 'partials/twitter/user-profile.html'
+            },
+            {
+                name : 'post_status',
+                description : 'Post status-update on twitter',
+                template : 'partials/twitter/post-update.html'
+            }
+        ],
+        current : undefined
+    };
+
+    $scope.switchTwitterState = function(state){
+        $scope.data_twitter = undefined;
+        $scope.twitterstate.current = undefined;
+
+        if(state){
+            if(state.api){
+                $scope.query = state.api.method.toUpperCase() + " - " + state.api.call;
+                $http[state.api.method](state.api.call).
+                    success(function(data, status, headers, config) {
+                        $log.debug(data);
+                        $scope.data_twitter = data;
+                        $scope.twitterstate.current = state.name;
+                        $apiKey.setError();
+                    }).
+                    error(function(data, status, headers, config) {
+                        $log.debug("Error: " + data);
+                        if(status === 401){
+                            if(data.type === "KEY"){
+                                $apiKey.setError(data.message);
+                            }
+                        }
+                    });
+            } else if(state.template) {
+                $scope.twitterstate.current = state.name;
+            }
+        }
+    };
+
+
+    $scope.loginTwitter = function(){
+        OAuth.popup('twitter', {cache: false}).done(function(result) {
+            $log.debug("Authenticated with twitter");
+            $log.debug(result);
+            $authentication.setCredentials('twitter', {
+                oauth_token: result.oauth_token,
+                oauth_token_secret: result.oauth_token_secret
+            }, true, true);
+        });
+    };
+
+    $log.debug("Started controller Twitter-Controller");
+});
+
+
+appControllers.controller("example.FacebookController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
     OAuth.initialize("U7oog1cN5o_ZsjeoQ_rPOxbFaKA");
 
     $scope.fbstate = {
@@ -135,68 +244,13 @@ appControllers.controller("apitest.BaseController", function ($log, $http, $scop
         current : undefined
     };
 
-    $scope.twitterstate = {
-        states : [
-            {
-                name: 'get_friends',
-                description: 'Fetch friends on twitter',
-                api : {
-                    method : 'get',
-                    call : $documeeApi.baseAddress + 'twitter/friends'
-                },
-                template : 'partials/twitter/friends-list.html'
-            },
-            {
-                name: 'delete_following',
-                description: 'Fetch people following on twitter',
-                api : {
-                    method : 'get',
-                    call : $documeeApi.baseAddress + 'twitter/following'
-                },
-                template : 'partials/twitter/friends-list.html'
-            },
-            {
-                name: 'get_followers',
-                description: 'Fetch followers on twitter',
-                api : {
-                    method : 'get',
-                    call : $documeeApi.baseAddress + 'twitter/followers'
-                },
-                template : 'partials/twitter/friends-list.html'
-            },
-            {
-                name: 'get_trends',
-                description: 'Fetch top 10 trends on twitter',
-                api : {
-                    method : 'get',
-                    call : $documeeApi.baseAddress + 'twitter/trends'
-                },
-                template : 'partials/twitter/trends-list.html'
-            },
-            {
-                name : 'get_user',
-                description : 'Fetch user information on twitter',
-                api : {
-                    method : 'get',
-                    call : $documeeApi.baseAddress + 'twitter/me'
-                },
-                template : 'partials/twitter/user-profile.html'
-            },
-            {
-                name : 'post_status',
-                description : 'Post status-update on twitter',
-                template : 'partials/twitter/post-update.html'
-            }
-        ],
-        current : undefined
-    };
-
     $scope.switchFbState = function(state){
         $scope.data_fb = undefined;
         $scope.fbstate.current = undefined;
 
         if(state){
             if(state.api){
+                $scope.query = state.api.method.toUpperCase() + " - " + state.api.call;
                 $http[state.api.method](state.api.call).
                     success(function(data, status, headers, config) {
                         $log.debug("Success: " + JSON.stringify(data));
@@ -218,45 +272,6 @@ appControllers.controller("apitest.BaseController", function ($log, $http, $scop
         }
     };
 
-    $scope.switchTwitterState = function(state){
-        $scope.data_twitter = undefined;
-        $scope.twitterstate.current = undefined;
-
-        if(state){
-            if(state.api){
-                $http[state.api.method](state.api.call).
-                    success(function(data, status, headers, config) {
-                        $log.debug(data);
-                        $scope.data_twitter = data;
-                        $scope.twitterstate.current = state.name;
-                        $apiKey.setError();
-                    }).
-                    error(function(data, status, headers, config) {
-                        $log.debug("Error: " + data);
-                        if(status === 401){
-                            if(data.type === "KEY"){
-                                $apiKey.setError(data.message);
-                            }
-                        }
-                    });
-            } else if(state.template) {
-                $scope.twitterstate.current = state.name;
-            }
-        }
-    };
-
-
-    $scope.loginTwitter = function(){
-        OAuth.popup('twitter', {cache: false}).done(function(result) {
-            $log.debug("Authenticated with twitter");
-            $log.debug(result);
-            $authentication.setCredentials('twitter', {
-                oauth_token: result.oauth_token,
-                oauth_token_secret: result.oauth_token_secret
-            }, true, true);
-        });
-    };
-
     $scope.loginFacebook = function(){
         OAuth.popup('facebook', {cache: false}).done(function(result) {
             $log.debug("Authenticated with facebook");
@@ -269,59 +284,16 @@ appControllers.controller("apitest.BaseController", function ($log, $http, $scop
         });
     };
 
-    $log.debug("Started controller apitest.BaseController")
+    $log.debug("Started controller Facebook-Controller")
 });
 
-appControllers.controller("apitest.PostFbStatusController", function($http, $scope, $apiKey, $documeeApi){
 
-    $scope.status = undefined;
-
-    $scope.postStatus = function(){
-        $http.post($documeeApi.baseAddress + "fb/status", {status: $scope.status}).
-            success(function(data, status, headers, config) {
-                console.log(data);
-                $scope.status = undefined;
-                $apiKey.setError();
-            }).
-            error(function(data, status, headers, config) {
-                console.log("Error: " + data);
-                if(status === 401){
-                    if(data.type === "KEY"){
-                        $apiKey.setError(data.message);
-                    }
-                }
-            });
-    };
-});
-
-appControllers.controller("apitest.PostTwitterStatusController", function($http, $scope, $apiKey, $documeeApi){
-
-    $scope.status = undefined;
-
-    $scope.postStatus = function(){
-        $http.post($documeeApi.baseAddress + "twitter/status", {status: $scope.status}).
-            success(function(data, status, headers, config) {
-                console.log(data);
-                $scope.status = undefined;
-                $apiKey.setError();
-            }).
-            error(function(data, status, headers, config) {
-                console.log("Error: " + data);
-                if(status === 401){
-                    if(data.type === "KEY"){
-                        $apiKey.setError(data.message);
-                    }
-                }
-            });
-    };
-});
-
-appControllers.controller('apitest.NavbarController', function($scope, $http, $rootScope, $modal){
+appControllers.controller('example.NavbarController', function($scope, $http, $rootScope, $modal){
     $scope.showKeyDialog = function(size){
         var modalInstance = $modal.open({
             animation: true,
-            templateUrl: 'apitest/views/dialogs/change-api-key.html',
-            controller: 'apitest.ChangeApiKeyController',
+            templateUrl: 'partials/dialogs/change-api-key.html',
+            controller: 'example.ChangeApiKeyController',
             size: size,
             resolve: {
                 api_key: function () {
@@ -347,7 +319,7 @@ appControllers.controller('apitest.NavbarController', function($scope, $http, $r
 });
 
 
-appControllers.controller('apitest.ChangeApiKeyController', function($scope, $modalInstance, api_key) {
+appControllers.controller('example.ChangeApiKeyController', function($scope, $modalInstance, api_key) {
     $scope.api_key = api_key;
 
 
@@ -359,4 +331,48 @@ appControllers.controller('apitest.ChangeApiKeyController', function($scope, $mo
         $modalInstance.dismiss('user - cancel');
     };
 
+});
+
+appControllers.controller("example.PostFbStatusController", function($http, $scope, $apiKey, $documeeApi){
+
+    $scope.status = undefined;
+
+    $scope.postStatus = function(){
+        $http.post($documeeApi.baseAddress + "fb/status", {status: $scope.status}).
+            success(function(data, status, headers, config) {
+                console.log(data);
+                $scope.status = undefined;
+                $apiKey.setError();
+            }).
+            error(function(data, status, headers, config) {
+                console.log("Error: " + data);
+                if(status === 401){
+                    if(data.type === "KEY"){
+                        $apiKey.setError(data.message);
+                    }
+                }
+            });
+    };
+});
+
+appControllers.controller("example.PostTwitterStatusController", function($http, $scope, $apiKey, $documeeApi){
+
+    $scope.status = undefined;
+
+    $scope.postStatus = function(){
+        $http.post($documeeApi.baseAddress + "twitter/status", {status: $scope.status}).
+            success(function(data, status, headers, config) {
+                console.log(data);
+                $scope.status = undefined;
+                $apiKey.setError();
+            }).
+            error(function(data, status, headers, config) {
+                console.log("Error: " + data);
+                if(status === 401){
+                    if(data.type === "KEY"){
+                        $apiKey.setError(data.message);
+                    }
+                }
+            });
+    };
 });
