@@ -191,35 +191,26 @@
                             <div class="item">
                                 <div class="item-row">
 
-                                    <div ng-hide="isAuthenticated(provider)">
+                                    <div ng-hide="isAuthenticated(provider.name)">
                                         <div class="item-top">
-                                            <a href="" ng-disabled="!isAuthenticated(provider)"><i class="fa fa-twitter"></i></a>
+                                            <a href="" ><i ng-class="provider.faClass"></i></a>
                                             <p>Autorisieren</p>
                                         </div>
                                     </div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-12">
-                            <div class="item">
-                                <div class="item-row">
-
-                                    <div ng-hide="auth.facebook.authenticated">
-                                        <div class="item-top">
-                                            <a href="" ng-disabled="!isAuthenticated(provider)"><i class="fa fa-facebook"></i></a>
-                                            <p>Autorisieren</p>
-                                        </div>
+                                    <div ng-hide="!isAuthenticated(provider.name)">
+                                        <button type="button" class="btn btn-default" ng-click="toggleUse(provider.name)" ng-disabled="!isAuthenticated(provider.name)">
+                                            <i ng-class="provider.faClass"></i> {{provider.name}}
+                                            <span ng-if="isUsed(provider.name)" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                            <span ng-if="!isUsed(provider.name)" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                        </button>
                                     </div>
 
                                 </div>
-
                             </div>
                         </div>
                         <div class="col-md-12 col-sm-12">
                             <div class="item">
                                 <div class="item-row">
-
                                     <div class="item-content">
                                         <ul>
                                             <li ng-repeat="state in progState.states">

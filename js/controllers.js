@@ -1,14 +1,24 @@
 var appControllers = angular.module('example.controllers', ['example.services', 'ui.bootstrap']);
 
 
-appControllers.controller("example.MixController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
+appControllers.controller("example.MixController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi, $queryGenerator) {
 
-    $scope.providers = ['facebook', 'twitter'];
-    $scope.useProvider = {};
+    $scope.providers = [
+        {
+            name: 'facebook',
+            faClass: 'fa fa-facebook',
+        },
+        {
+            name: 'twitter',
+            faClass: 'fa fa-twitter'
+        }
+    ];
+
+    var useProvider = {};
 
 
-    $scope.isAuthenticated = function(provider){
-        return $authentication.isAuthenticated(provider);
+    $scope.isAuthenticated = function(providerName){
+        return $authentication.isAuthenticated(providerName);
     }
 
     $scope.progState = {
@@ -35,6 +45,15 @@ appControllers.controller("example.MixController", function ($log, $http, $scope
         current : undefined
     };
 
+    $scope.isUsed = function(providerName){
+        return useProvider[providerName];
+    };
+
+    $scope.toggleUse = function(providerName){
+        useProvider[providerName] = !useProvider[providerName];
+    };
+
+
     $scope.switchState = function(newState){
         $scope.data = undefined;
         $scope.progState.current = undefined;
@@ -44,19 +63,16 @@ appControllers.controller("example.MixController", function ($log, $http, $scope
                 var queryProviders = [];
 
                 $scope.providers.forEach(function(provider){
-                    if($scope.isAuthenticated(provider) && $scope.useProvider[provider]){
-                        queryProviders.push(provider);
+                    if($scope.isAuthenticated(provider.name) && $scope.isUsed(provider.name)){
+                        queryProviders.push(provider.name);
                     }
                 });
                 $log.debug(queryProviders);
+                var params = {providers:queryProviders};
 
-                var params = "";
-                if(queryProviders.length>0){
-                    params = "?"
-                }
 
-                $scope.query = newState.api.method.toUpperCase() + " - " + newState.api.call + params;
-                $http[newState.api.method](newState.api.call, {params: {providers:queryProviders}}).
+                $scope.query = $queryGenerator.genQuery(newState, params);
+                $http[newState.api.method](newState.api.call, {params: params}).
                     success(function(data, status, headers, config) {
                         $log.debug("Success: " + JSON.stringify(data));
                         $scope.data = data;
@@ -82,11 +98,20 @@ appControllers.controller("example.MixController", function ($log, $http, $scope
 });
 
 
-appControllers.controller("example.TwitterController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
+appControllers.controller("example.TwitterController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi, $queryGenerator) {
     OAuth.initialize("U7oog1cN5o_ZsjeoQ_rPOxbFaKA");
 
     $scope.twitterstate = {
         states : [
+            {
+                name : 'get_user',
+                description : 'Fetch user information on twitter',
+                api : {
+                    method : 'get',
+                    call : $documeeApi.baseAddress + 'twitter/me'
+                },
+                template : 'partials/twitter/user-profile.html'
+            },
             {
                 name: 'get_friends',
                 description: 'Fetch friends on twitter',
@@ -97,7 +122,7 @@ appControllers.controller("example.TwitterController", function ($log, $http, $s
                 template : 'partials/twitter/friends-list.html'
             },
             {
-                name: 'delete_following',
+                name: 'get_following',
                 description: 'Fetch people following on twitter',
                 api : {
                     method : 'get',
@@ -124,15 +149,6 @@ appControllers.controller("example.TwitterController", function ($log, $http, $s
                 template : 'partials/twitter/trends-list.html'
             },
             {
-                name : 'get_user',
-                description : 'Fetch user information on twitter',
-                api : {
-                    method : 'get',
-                    call : $documeeApi.baseAddress + 'twitter/me'
-                },
-                template : 'partials/twitter/user-profile.html'
-            },
-            {
                 name : 'post_status',
                 description : 'Post status-update on twitter',
                 template : 'partials/twitter/post-update.html'
@@ -147,7 +163,7 @@ appControllers.controller("example.TwitterController", function ($log, $http, $s
 
         if(state){
             if(state.api){
-                $scope.query = state.api.method.toUpperCase() + " - " + state.api.call;
+                $scope.query = $queryGenerator.genQuery(state);
                 $http[state.api.method](state.api.call).
                     success(function(data, status, headers, config) {
                         $log.debug(data);
@@ -185,11 +201,39 @@ appControllers.controller("example.TwitterController", function ($log, $http, $s
 });
 
 
-appControllers.controller("example.FacebookController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
+appControllers.controller("example.FacebookController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi, $queryGenerator) {
     OAuth.initialize("U7oog1cN5o_ZsjeoQ_rPOxbFaKA");
 
     $scope.fbstate = {
         states : [
+            {
+                name: 'get_me',
+                description: 'Fetch profile-infos from Facebook',
+                api : {
+                    method : 'get',
+                    call : $documeeApi.baseAddress + 'fb/me'
+                },
+                template : 'partials/facebook/user-profile.html'
+            },
+            {
+                name: 'get_friends',
+                description: 'Fetch tagable friends from Facebook',
+                api : {
+                    method : 'get',
+                    call : $documeeApi.baseAddress + 'fb/friends'
+                },
+                template : 'partials/facebook/friends-list.html'
+            },
+
+            {
+                name: 'get_feeds',
+                description: 'Fetch latest feeds on Facebook',
+                api : {
+                    method : 'get',
+                    call : $documeeApi.baseAddress + 'fb/feeds'
+                },
+                template : 'partials/facebook/feeds-list.html'
+            },
             {
                 name: 'get_permissions',
                 description: 'Fetch all app-permissions',
@@ -208,33 +252,6 @@ appControllers.controller("example.FacebookController", function ($log, $http, $
                 }
             },
             {
-                name: 'get_friends',
-                description: 'Fetch tagable friends from Facebook',
-                api : {
-                    method : 'get',
-                    call : $documeeApi.baseAddress + 'fb/friends'
-                },
-                template : 'partials/facebook/friends-list.html'
-            },
-            {
-                name: 'get_me',
-                description: 'Fetch profile-infos from Facebook',
-                api : {
-                    method : 'get',
-                    call : $documeeApi.baseAddress + 'fb/me'
-                },
-                template : 'partials/facebook/user-profile.html'
-            },
-            {
-                name: 'get_feeds',
-                description: 'Fetch latest feeds on Facebook',
-                api : {
-                    method : 'get',
-                    call : $documeeApi.baseAddress + 'fb/feeds'
-                },
-                template : 'partials/facebook/feeds-list.html'
-            },
-            {
                 name : 'post_status',
                 description : 'Post status-update on facebook',
                 template : 'partials/facebook/post-update.html'
@@ -250,7 +267,7 @@ appControllers.controller("example.FacebookController", function ($log, $http, $
 
         if(state){
             if(state.api){
-                $scope.query = state.api.method.toUpperCase() + " - " + state.api.call;
+                $scope.query = $queryGenerator.genQuery(state);
                 $http[state.api.method](state.api.call).
                     success(function(data, status, headers, config) {
                         $log.debug("Success: " + JSON.stringify(data));
