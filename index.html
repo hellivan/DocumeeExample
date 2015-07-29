@@ -233,5 +233,15 @@
         </div>
     </section>
 
+    <div class="api-key-button" ng-controller="example.NavbarController">
+        <div dropdown class="dropup">
+            <p ng-class="keyStyle" tooltip-placement="top" tooltip="{{key_error}}"><strong>API-Key:</strong> {{api_key}} <a dropdown-toggle href="" class="dropdown-toggle "> <span class="glyphicon glyphicon-option-vertical"></span></a></p>
+
+            <ul dropdown-menu class="dropdown-menu dropdown-menu-right">
+                <li><a href="" ng-click="showKeyDialog()">Change API-key</a></li>
+            </ul>
+        </div>
+    </div>
+
 </body>
 </html>

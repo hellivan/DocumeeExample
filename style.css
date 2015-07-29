@@ -25,6 +25,11 @@
     font-size: 65%;
 }
 
+.api-key-button {
+    position: fixed;
+    bottom: 5px;
+    right: 20px;
+}
 
 .red {
     color: red;
