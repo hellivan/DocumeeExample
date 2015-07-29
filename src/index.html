@@ -1,44 +1,46 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="documee_demo">
+<html lang="en" ng-app="documee_example">
 <head>
     <meta charset="UTF-8">
     <title>Documee Example</title>
 
     <link rel="stylesheet" type="text/css" href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800|Montserrat:700,400|Varela+Round' >
-    <link rel="stylesheet" type="text/css" href="bower_components/fontawesome/css/font-awesome.css">
 
-    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="bower_components/angular-loading-bar/build/loading-bar.css">
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- build:css css/style.min.css -->
+    <link rel="stylesheet" type="text/css" href="../bower_components/fontawesome/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../bower_components/angular-loading-bar/build/loading-bar.css">
+    <link rel="stylesheet" type="text/css" href="../bower_components/fullpage.js/jquery.fullPage.css"/>
 
-    <link rel="stylesheet" type="text/css" href="bower_components/fullpage.js/jquery.fullPage.css"/>
-    <link rel="stylesheet" type="text/css" href="lib/css/animate.css"/>
-    <link rel="stylesheet" type="text/css" href="lib/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/animate.css"/>
+    <link rel="stylesheet" type="text/css" href="css/lukas-style.css"/>
+    <!-- endbuild -->
 
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="bower_components/oauth-js/dist/oauth.js"></script>
-    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-    <script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
-    <script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
-
+    <!-- build:js js/app.min.js -->
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="../bower_components/oauth-js/dist/oauth.js"></script>
+    <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="../bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="../bower_components/angular-loading-bar/build/loading-bar.js"></script>
+    <script src="../bower_components/angular-route/angular-route.js"></script>
+    <script src="../bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
+    <script src="../bower_components/wow/dist/wow.js"></script>
+    <script src="../bower_components/jquery.easing/js/jquery.easing.js"></script>
+    <script src="../bower_components/jquery.scrollTo/jquery.scrollTo.js"></script>
+    <script src="../bower_components/fullpage.js/jquery.fullPage.js"></script>
+    <script src="../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 
 
     <script src="js/controllers.js"></script>
     <script src="js/services.js"></script>
     <script src="js/directives.js"></script>
+    <script src="js/app.js"></script>
 
-    <script src="app.js"></script>
-
-    <script src="bower_components/wow/dist/wow.js"></script>
-    <script src="bower_components/jquery.easing/js/jquery.easing.js"></script>
-    <script src="bower_components/jquery.scrollTo/jquery.scrollTo.js"></script>
-    <script src="bower_components/fullpage.js/jquery.fullPage.js"></script>
-    <script src="bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-    <script src="lib/js/example.js" type="text/javascript" ></script>
+    <script src="js/example.js"></script>
+    <!-- endbuild -->
 </head>
 
 <body >
@@ -71,7 +73,7 @@
         </div>
 
         <div class="section">
-            <div class="slide"  ng-controller="example.FacebookController">
+            <div class="slide"  ng-controller="FacebookController">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
@@ -122,7 +124,7 @@
                 </div>
             </div>
 
-            <div class="slide" ng-controller="example.TwitterController">
+            <div class="slide" ng-controller="TwitterController">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
@@ -174,7 +176,7 @@
                 </div>
             </div>
 
-            <div class="slide" ng-controller="example.MixController">
+            <div class="slide" ng-controller="ProvidersController">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
@@ -232,7 +234,7 @@
         </div>
     </section>
 
-    <div id="api-key-button" ng-controller="example.NavbarController">
+    <div id="api-key-button" ng-controller="ApiKeyController">
         <div dropdown class="dropdown">
             <p ng-class="keyStyle" tooltip-placement="bottom" tooltip="{{key_error}}"><strong>API-Key:</strong> {{api_key}} <a dropdown-toggle href="" class="dropdown-toggle "> <span class="glyphicon glyphicon-option-vertical"></span></a></p>
 
