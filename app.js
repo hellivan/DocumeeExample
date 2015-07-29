@@ -1,7 +1,7 @@
 var app = angular.module('documee_demo', ['angular-loading-bar', 'ui.bootstrap', 'ui.router', 'ngRoute', 'LocalStorageModule', 'example.services', 'example.controllers']);
 
-app.config(['cfpLoadingBarProvider', '$httpProvider', '$routeProvider', 'localStorageServiceProvider', '$documeeApiProvider',
-    function(cfpLoadingBarProvider, $httpProvider, $routeProvider, localStorageServiceProvider, $documeeApiProvider) {
+app.config(['cfpLoadingBarProvider', '$httpProvider', '$routeProvider', 'localStorageServiceProvider', '$documeeApiProvider', '$authenticationProvider',
+    function(cfpLoadingBarProvider, $httpProvider, $routeProvider, localStorageServiceProvider, $documeeApiProvider, $authenticationProvider) {
 
         cfpLoadingBarProvider.includeSpinner = false;
         cfpLoadingBarProvider.includeBar = true;
@@ -20,7 +20,7 @@ app.config(['cfpLoadingBarProvider', '$httpProvider', '$routeProvider', 'localSt
         });
 
         localStorageServiceProvider.setPrefix('ls');
-
+        $authenticationProvider.setOauthKey("U7oog1cN5o_ZsjeoQ_rPOxbFaKA");
         $documeeApiProvider.setHostAddress("http://documee-protoype.herokuapp.com/");
         $documeeApiProvider.setApiPath("api/v0/");
     }]);

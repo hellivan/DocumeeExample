@@ -7,10 +7,12 @@ appControllers.controller("example.MixController", function ($log, $http, $scope
         {
             name: 'facebook',
             faClass: 'fa fa-facebook',
+            login : $authentication.loginFacebook
         },
         {
             name: 'twitter',
-            faClass: 'fa fa-twitter'
+            faClass: 'fa fa-twitter',
+            login : $authentication.loginTwitter
         }
     ];
 
@@ -93,14 +95,11 @@ appControllers.controller("example.MixController", function ($log, $http, $scope
         }
     };
 
-
     $log.debug("Loaded MixController");
 });
 
 
 appControllers.controller("example.TwitterController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi, $queryGenerator) {
-    OAuth.initialize("U7oog1cN5o_ZsjeoQ_rPOxbFaKA");
-
     $scope.twitterstate = {
         states : [
             {
@@ -186,15 +185,8 @@ appControllers.controller("example.TwitterController", function ($log, $http, $s
     };
 
 
-    $scope.loginTwitter = function(){
-        OAuth.popup('twitter', {cache: false}).done(function(result) {
-            $log.debug("Authenticated with twitter");
-            $log.debug(result);
-            $authentication.setCredentials('twitter', {
-                oauth_token: result.oauth_token,
-                oauth_token_secret: result.oauth_token_secret
-            }, true, true);
-        });
+    $scope.login = function(){
+        $authentication.loginFacebook();
     };
 
     $log.debug("Started controller Twitter-Controller");
@@ -202,8 +194,6 @@ appControllers.controller("example.TwitterController", function ($log, $http, $s
 
 
 appControllers.controller("example.FacebookController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi, $queryGenerator) {
-    OAuth.initialize("U7oog1cN5o_ZsjeoQ_rPOxbFaKA");
-
     $scope.fbstate = {
         states : [
             {
@@ -289,16 +279,8 @@ appControllers.controller("example.FacebookController", function ($log, $http, $
         }
     };
 
-    $scope.loginFacebook = function(){
-        OAuth.popup('facebook', {cache: false}).done(function(result) {
-            $log.debug("Authenticated with facebook");
-            $log.debug(result);
-            $authentication.setCredentials('facebook', {
-                access_token: result.access_token,
-                token_type: result.token_type,
-                expires_in: result.expires_in
-            }, true, true);
-        });
+    $scope.login = function(){
+        $authentication.loginFacebook();
     };
 
     $log.debug("Started controller Facebook-Controller")

@@ -110,7 +110,7 @@
 
                                     <div ng-hide="auth.facebook.authenticated">
                                         <div class="item-top">
-                                            <a href="" ng-click="loginFacebook()"><i class="fa fa-facebook"></i></a>
+                                            <a href="" ng-click="login()"><i class="fa fa-facebook"></i></a>
                                             <p>Autorisieren</p>
                                         </div>
                                     </div>
@@ -162,7 +162,7 @@
 
                                     <div ng-hide="auth.twitter.authenticated">
                                         <div class="item-top">
-                                            <a href="" ng-click="loginTwitter()"><i class="fa fa-twitter"></i></a>
+                                            <a href="" ng-click="login()"><i class="fa fa-twitter"></i></a>
                                             <p>Autorisieren</p>
                                         </div>
                                     </div>
@@ -193,7 +193,7 @@
 
                                     <div ng-hide="isAuthenticated(provider.name)">
                                         <div class="item-top">
-                                            <a href="" ><i ng-class="provider.faClass"></i></a>
+                                            <a href="" ng-click="provider.login()"><i ng-class="provider.faClass"></i></a>
                                             <p>Autorisieren</p>
                                         </div>
                                     </div>
