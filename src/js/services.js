@@ -28,7 +28,7 @@ angular.module('services', ['ngCookies', 'LocalStorageModule'])
                         }
                     }
                     return false;
-                }
+                };
 
                 service.setCredentials = function (provider, credentials, persistent, apply) {
                     $log.debug('Setting credential for ' + provider + ' to ' + JSON.stringify(credentials));
@@ -110,11 +110,12 @@ angular.module('services', ['ngCookies', 'LocalStorageModule'])
         service.fromParams = function(method, url, params, postData){
             var paramsArr = [];
             if(params){
+                var paramsAdded = function(param){
+                    paramsArr.push(paramName+"="+param);
+                };
                 for(var paramName in params){
                     if( Object.prototype.toString.call( params[paramName] ) === '[object Array]' ) {
-                        params[paramName].forEach(function(param){
-                            paramsArr.push(paramName+"="+param);
-                        });
+                        params[paramName].forEach(paramsAdded);
                     } else {
                         paramsArr.push(paramName+"="+params[paramName]);
                     }
@@ -128,7 +129,7 @@ angular.module('services', ['ngCookies', 'LocalStorageModule'])
                 queryString+= "\n" + JSON.stringify(postData);
             }
             return queryString;
-        }
+        };
 
         service.fromHttpConfig = function (config){
             return service.fromParams(config.method, config.url, config.params);

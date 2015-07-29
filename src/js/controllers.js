@@ -29,7 +29,7 @@ angular.module('controllers', ['services', 'ui.bootstrap'])
                    }
                 });
                 return authenticated;
-            }
+            };
 
             $scope.progState = {
                 states : [
@@ -80,7 +80,7 @@ angular.module('controllers', ['services', 'ui.bootstrap'])
                         $log.debug(queryProviders);
                         var params = {providers:queryProviders};
 
-                        $scope.mixedQuery = $queryGen.fromParams(newState.api.method, newState.api.call, params);
+                        $rootScope.mixedQuery = $queryGen.fromParams(newState.api.method, newState.api.call, params);
                         $http[newState.api.method](newState.api.call, {params: params}).
                             success(function(data, status, headers, config) {
                                 $log.debug("Success: " + JSON.stringify(data));
@@ -176,7 +176,7 @@ angular.module('controllers', ['services', 'ui.bootstrap'])
 
                 if(state){
                     if(state.api){
-                        $scope.twitterQuery = $queryGen.fromParams(state.api.method, state.api.call, null);
+                        $rootScope.twitterQuery = $queryGen.fromParams(state.api.method, state.api.call, null);
                         $http[state.api.method](state.api.call).
                             success(function(data, status, headers, config) {
                                 $log.debug(data);
@@ -276,7 +276,7 @@ angular.module('controllers', ['services', 'ui.bootstrap'])
 
                 if(state){
                     if(state.api){
-                        $scope.facebookQuery = $queryGen.fromParams(state.api.method, state.api.call, null);
+                        $rootScope.facebookQuery = $queryGen.fromParams(state.api.method, state.api.call, null);
                         $http[state.api.method](state.api.call).
                             success(function(data, status, headers, config) {
                                 $log.debug("Success: " + JSON.stringify(data));
@@ -309,7 +309,7 @@ angular.module('controllers', ['services', 'ui.bootstrap'])
                 }
             });
 
-            $log.debug("Started controller Facebook-Controller")
+            $log.debug("Started controller Facebook-Controller");
         }])
 
     .controller('ApiKeyController', ['$scope', '$http', '$rootScope', '$modal', '$apiKey',
