@@ -29,6 +29,7 @@
 
     <script src="js/controllers.js"></script>
     <script src="js/services.js"></script>
+    <script src="js/directives.js"></script>
 
     <script src="app.js"></script>
 
@@ -62,7 +63,7 @@
         <!--</div>-->
     <!--</nav>-->
 
-    <section id="example-section">
+    <section id="example-section" fullpage="{scrollOverflow: true, navigation: true, slidesNavigation:true}">
 
         <div class="section">
             <div class="container">
@@ -79,7 +80,7 @@
                             <div ng-hide="!auth.facebook.authenticated">
                                 <div class="code-box">
                                     <p>Vorschau welche Queries ausgeführt werden<p>
-                                    <pre>{{query}}</pre>
+                                    <pre>{{currentQuery}}</pre>
                                 </div>
                             </div>
 
@@ -130,7 +131,7 @@
                             <div ng-hide="!auth.twitter.authenticated">
                                 <div class="code-box">
                                     <p>Vorschau welche Queries ausgeführt werden<p>
-                                    <pre>{{query}}</pre>
+                                    <pre>{{currentQuery}}</pre>
                                 </div>
                             </div>
 
@@ -181,7 +182,7 @@
 
                             <div class="code-box">
                                 <p>Vorschau welche Queries ausgeführt werden<p>
-                                <pre>{{query}}</pre>
+                                <pre>{{currentQuery}}</pre>
                             </div>
 
                         </div>
@@ -208,7 +209,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-12">
+                        <div ng-hide="!(getAuthenticated().length>0)" class="col-md-12 col-sm-12">
                             <div class="item">
                                 <div class="item-row">
                                     <div class="item-content">

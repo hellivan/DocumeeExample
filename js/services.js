@@ -1,34 +1,5 @@
 var appServices = angular.module('example.services', ['ngCookies', 'LocalStorageModule']);
 
-appServices.factory('$queryGenerator',
-    function(){
-        var service = {};
-
-        service.genQuery = function (newState, params){
-            var paramsArr = [];
-            if(params){
-                for(var paramName in params){
-                    if( Object.prototype.toString.call( params[paramName] ) === '[object Array]' ) {
-                        params[paramName].forEach(function(param){
-                            paramsArr.push(paramName+"="+param);
-                        });
-                    } else {
-                        paramsArr.push(paramName+"="+params[paramName]);
-                    }
-                }
-            }
-            var queryString = newState.api.method.toUpperCase() + " - " + newState.api.call;
-            if(paramsArr.length>0){
-                queryString += "?" + paramsArr.join("&");
-            }
-
-            return queryString;
-        }
-
-        return service;
-    }
-);
-
 appServices.provider('$authentication', function() {
 
     var oauthKey;

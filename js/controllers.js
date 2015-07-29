@@ -1,8 +1,7 @@
 var appControllers = angular.module('example.controllers', ['example.services', 'ui.bootstrap']);
 
 
-appControllers.controller("example.MixController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi, $queryGenerator) {
-
+appControllers.controller("example.MixController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
     $scope.providers = [
         {
             name: 'facebook',
@@ -21,6 +20,16 @@ appControllers.controller("example.MixController", function ($log, $http, $scope
 
     $scope.isAuthenticated = function(providerName){
         return $authentication.isAuthenticated(providerName);
+    };
+
+    $scope.getAuthenticated = function(){
+        var authenticated = [];
+        $scope.providers.forEach(function(provider){
+           if($scope.isAuthenticated(provider.name)){
+               authenticated.push(provider);
+           }
+        });
+        return authenticated;
     }
 
     $scope.progState = {
@@ -73,7 +82,6 @@ appControllers.controller("example.MixController", function ($log, $http, $scope
                 var params = {providers:queryProviders};
 
 
-                $scope.query = $queryGenerator.genQuery(newState, params);
                 $http[newState.api.method](newState.api.call, {params: params}).
                     success(function(data, status, headers, config) {
                         $log.debug("Success: " + JSON.stringify(data));
@@ -95,11 +103,18 @@ appControllers.controller("example.MixController", function ($log, $http, $scope
         }
     };
 
+    $scope.$watch('progState.current', function(){
+        if($scope.progState.current){
+            $scope.rebuildFP();
+        }
+    });
+
     $log.debug("Loaded MixController");
 });
 
 
-appControllers.controller("example.TwitterController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi, $queryGenerator) {
+appControllers.controller("example.TwitterController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
+
     $scope.twitterstate = {
         states : [
             {
@@ -162,7 +177,6 @@ appControllers.controller("example.TwitterController", function ($log, $http, $s
 
         if(state){
             if(state.api){
-                $scope.query = $queryGenerator.genQuery(state);
                 $http[state.api.method](state.api.call).
                     success(function(data, status, headers, config) {
                         $log.debug(data);
@@ -186,14 +200,19 @@ appControllers.controller("example.TwitterController", function ($log, $http, $s
 
 
     $scope.login = function(){
-        $authentication.loginFacebook();
+        $authentication.loginTwitter();
     };
 
+    $scope.$watch('twitterstate.current', function(){
+        if($scope.twitterstate.current){
+            $scope.rebuildFP();
+        }
+    });
     $log.debug("Started controller Twitter-Controller");
 });
 
 
-appControllers.controller("example.FacebookController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi, $queryGenerator) {
+appControllers.controller("example.FacebookController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
     $scope.fbstate = {
         states : [
             {
@@ -257,7 +276,6 @@ appControllers.controller("example.FacebookController", function ($log, $http, $
 
         if(state){
             if(state.api){
-                $scope.query = $queryGenerator.genQuery(state);
                 $http[state.api.method](state.api.call).
                     success(function(data, status, headers, config) {
                         $log.debug("Success: " + JSON.stringify(data));
@@ -282,6 +300,13 @@ appControllers.controller("example.FacebookController", function ($log, $http, $
     $scope.login = function(){
         $authentication.loginFacebook();
     };
+
+
+    $scope.$watch('fbstate.current', function(){
+        if($scope.fbstate.current){
+            $scope.rebuildFP();
+        }
+    });
 
     $log.debug("Started controller Facebook-Controller")
 });
