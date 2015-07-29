@@ -5,30 +5,12 @@ app.config(['cfpLoadingBarProvider', '$httpProvider', '$routeProvider', 'localSt
 
         var apiHostAddress = "http://documee-protoype.herokuapp.com/";
 
-        function genQuery(config){
-            var paramsArr = [];
-            if(config.params){
-                for(var paramName in config.params){
-                    if( Object.prototype.toString.call( config.params[paramName] ) === '[object Array]' ) {
-                        config.params[paramName].forEach(function(param){
-                            paramsArr.push(paramName+"="+param);
-                        });
-                    } else {
-                        paramsArr.push(paramName+"="+config.params[paramName]);
-                    }
-                }
-            }
-            var queryString = config.method + " - " + config.url;
-            if(paramsArr.length>0){
-                queryString += "?" + paramsArr.join("&");
-            }
-            return queryString;
-        };
+
 
         cfpLoadingBarProvider.includeSpinner = false;
         cfpLoadingBarProvider.includeBar = true;
 
-        $httpProvider.interceptors.push(function ($log, $q, $rootScope) {
+        $httpProvider.interceptors.push(function ($log, $q, $rootScope, $queryGen) {
             return {
                 'response': function (response) {
                     return response || $q.when(response);
@@ -40,7 +22,7 @@ app.config(['cfpLoadingBarProvider', '$httpProvider', '$routeProvider', 'localSt
                 },
                 'request': function(config) {
                     if(config.url.indexOf(apiHostAddress)>-1){
-                        $rootScope.currentQuery = genQuery(config);
+                        $rootScope.currentQuery = $queryGen.fromHttpConfig(config);
                     }
                     return config;
                 }

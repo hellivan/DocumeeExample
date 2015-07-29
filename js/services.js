@@ -107,6 +107,41 @@ appServices.provider('$authentication', function() {
 });
 
 
+
+appServices.factory('$queryGen',
+    function(){
+        var service = {};
+
+        service.fromParams = function(method, url, params, postData){
+            var paramsArr = [];
+            if(params){
+                for(var paramName in params){
+                    if( Object.prototype.toString.call( params[paramName] ) === '[object Array]' ) {
+                        params[paramName].forEach(function(param){
+                            paramsArr.push(paramName+"="+param);
+                        });
+                    } else {
+                        paramsArr.push(paramName+"="+params[paramName]);
+                    }
+                }
+            }
+            var queryString = method.toUpperCase() + " - " + url;
+            if(paramsArr.length>0){
+                queryString += "?" + paramsArr.join("&");
+            }
+            if(postData){
+                queryString+= "\n" + JSON.stringify(postData);
+            }
+            return queryString;
+        }
+
+        service.fromHttpConfig = function (config){
+            return service.fromParams(config.method, config.url, config.params);
+        };
+
+        return service;
+    });
+
 appServices.factory('$apiKey',
     function($log, $rootScope, $http){
         var service = {};

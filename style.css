@@ -1,3 +1,5 @@
+
+
 /**
  * Profile image component
  */
@@ -25,7 +27,7 @@
     font-size: 65%;
 }
 
-.api-key-button {
+#api-key-button {
     position: fixed;
     top: 30px;
     right: 20px;

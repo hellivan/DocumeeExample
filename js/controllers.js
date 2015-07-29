@@ -1,7 +1,7 @@
 var appControllers = angular.module('example.controllers', ['example.services', 'ui.bootstrap']);
 
 
-appControllers.controller("example.MixController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
+appControllers.controller("example.MixController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi, $queryGen) {
     $scope.providers = [
         {
             name: 'facebook',
@@ -81,7 +81,7 @@ appControllers.controller("example.MixController", function ($log, $http, $scope
                 $log.debug(queryProviders);
                 var params = {providers:queryProviders};
 
-
+                $scope.mixedQuery = $queryGen.fromParams(newState.api.method, newState.api.call, params);
                 $http[newState.api.method](newState.api.call, {params: params}).
                     success(function(data, status, headers, config) {
                         $log.debug("Success: " + JSON.stringify(data));
@@ -113,7 +113,7 @@ appControllers.controller("example.MixController", function ($log, $http, $scope
 });
 
 
-appControllers.controller("example.TwitterController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
+appControllers.controller("example.TwitterController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi, $queryGen) {
 
     $scope.twitterstate = {
         states : [
@@ -177,6 +177,7 @@ appControllers.controller("example.TwitterController", function ($log, $http, $s
 
         if(state){
             if(state.api){
+                $scope.twitterQuery = $queryGen.fromParams(state.api.method, state.api.call, null);
                 $http[state.api.method](state.api.call).
                     success(function(data, status, headers, config) {
                         $log.debug(data);
@@ -212,7 +213,7 @@ appControllers.controller("example.TwitterController", function ($log, $http, $s
 });
 
 
-appControllers.controller("example.FacebookController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi) {
+appControllers.controller("example.FacebookController", function ($log, $http, $scope, $rootScope, $authentication, $apiKey, $documeeApi, $queryGen) {
     $scope.fbstate = {
         states : [
             {
@@ -276,6 +277,7 @@ appControllers.controller("example.FacebookController", function ($log, $http, $
 
         if(state){
             if(state.api){
+                $scope.facebookQuery = $queryGen.fromParams(state.api.method, state.api.call, null);
                 $http[state.api.method](state.api.call).
                     success(function(data, status, headers, config) {
                         $log.debug("Success: " + JSON.stringify(data));
@@ -352,12 +354,16 @@ appControllers.controller('example.ChangeApiKeyController', function($scope, $mo
 
 });
 
-appControllers.controller("example.PostFbStatusController", function($http, $scope, $apiKey, $documeeApi){
+appControllers.controller("example.PostFbStatusController", function($http, $rootScope, $scope, $apiKey, $documeeApi, $queryGen){
 
     $scope.status = undefined;
 
     $scope.postStatus = function(){
-        $http.post($documeeApi.baseAddress + "fb/status", {status: $scope.status}).
+        var method = "post";
+        var url = $documeeApi.baseAddress + "fb/status";
+        var data = {status: $scope.status};
+        $rootScope.facebookQuery = $queryGen.fromParams(method, url, null, data);
+        $http[method](url, data).
             success(function(data, status, headers, config) {
                 console.log(data);
                 $scope.status = undefined;
@@ -374,12 +380,16 @@ appControllers.controller("example.PostFbStatusController", function($http, $sco
     };
 });
 
-appControllers.controller("example.PostTwitterStatusController", function($http, $scope, $apiKey, $documeeApi){
+appControllers.controller("example.PostTwitterStatusController", function($http, $rootScope, $scope, $apiKey, $documeeApi, $queryGen){
 
     $scope.status = undefined;
 
     $scope.postStatus = function(){
-        $http.post($documeeApi.baseAddress + "twitter/status", {status: $scope.status}).
+        var method = "post";
+        var url = $documeeApi.baseAddress + "twitter/status";
+        var data = {status: $scope.status};
+        $rootScope.twitterQuery = $queryGen.fromParams(method, url, null, data);
+        $http[method](url, data).
             success(function(data, status, headers, config) {
                 console.log(data);
                 $scope.status = undefined;

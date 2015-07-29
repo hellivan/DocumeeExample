@@ -33,7 +33,6 @@
 
     <script src="app.js"></script>
 
-    <!--<script src="lib/js/bootstrap.min.js" type="text/javascript" ></script>-->
     <script src="bower_components/wow/dist/wow.js"></script>
     <script src="bower_components/jquery.easing/js/jquery.easing.js"></script>
     <script src="bower_components/jquery.scrollTo/jquery.scrollTo.js"></script>
@@ -79,8 +78,8 @@
 
                             <div ng-hide="!auth.facebook.authenticated">
                                 <div class="code-box">
-                                    <p>Vorschau welche Queries ausgeführt werden<p>
-                                    <pre>{{currentQuery}}</pre>
+                                    <p>Vorschau der letzten ausgeführt Abfrage<p>
+                                    <pre>{{facebookQuery}}</pre>
                                 </div>
                             </div>
 
@@ -130,8 +129,8 @@
 
                             <div ng-hide="!auth.twitter.authenticated">
                                 <div class="code-box">
-                                    <p>Vorschau welche Queries ausgeführt werden<p>
-                                    <pre>{{currentQuery}}</pre>
+                                    <p>Vorschau der letzten ausgeführt Abfrage<p>
+                                    <pre>{{twitterQuery}}</pre>
                                 </div>
                             </div>
 
@@ -181,8 +180,8 @@
                         <div class="col-md-12 col-sm-12">
 
                             <div class="code-box">
-                                <p>Vorschau welche Queries ausgeführt werden<p>
-                                <pre>{{currentQuery}}</pre>
+                                <p>Vorschau der letzten ausgeführt Abfrage<p>
+                                <pre>{{mixedQuery}}</pre>
                             </div>
 
                         </div>
@@ -233,7 +232,7 @@
         </div>
     </section>
 
-    <div class="api-key-button" ng-controller="example.NavbarController">
+    <div id="api-key-button" ng-controller="example.NavbarController">
         <div dropdown class="dropdown">
             <p ng-class="keyStyle" tooltip-placement="bottom" tooltip="{{key_error}}"><strong>API-Key:</strong> {{api_key}} <a dropdown-toggle href="" class="dropdown-toggle "> <span class="glyphicon glyphicon-option-vertical"></span></a></p>
 
